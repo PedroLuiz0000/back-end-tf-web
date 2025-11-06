@@ -270,49 +270,189 @@ app.post("/adminstrador", async (req, res) => {
     const db = conectarBD(); // Conecta ao banco de dados
 
     const consulta =
-      "INSERT INTO imagens(link_imagem) VALUES ($1) "; // Consulta SQL para inserir a questão
-    const imagem = [data.link_imagem]; // Array com os valores a serem inseridos
-    const resultado = await db.query(consulta, imagem); // Executa a consulta SQL com os valores fornecidos
-    res.status(201).json({ mensagem: "Imagem criada com sucesso!" }); // Retorna o resultado da consulta como JSON
+      "INSERT INTO administrador(email, senha ) VALUES ($2) "; // Consulta SQL para inserir a questão
+    const admimistrador  = [data.email, data.senha]; // Array com os valores a serem inseridos
+    const resultado = await db.query(consulta, administrador); // Executa a consulta SQL com os valores fornecidos
+    res.status(201).json({ mensagem: "Administrador criado com sucesso!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao inserir imagem:", e); // Log do erro no servidor
+    console.error("Erro ao inserir administrador:", e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
   }
 });
 
-app.put("/imagens/:id", async (req, res) => {
-  console.log("Rota PUT /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
+app.put("/administrador/:id", async (req, res) => {
+  console.log("Rota PUT /administrador solicitado"); // Log no terminal para indicar que a rota foi acessada
 
   try {
     const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    let consulta = "SELECT * FROM imagens WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let consulta = "SELECT * FROM administrador WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
     let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
-    let imagem = resultado.rows; // Obtém as linhas retornadas pela consulta
+    let administrador = resultado.rows; // Obtém as linhas retornadas pela consulta
 
     // Verifica se a imagem foi encontrada
-    if (imagem.length === 0) {
-      return res.status(404).json({ message: "Imagem não encontrada" }); // Retorna erro 404 se a questão não for encontrada
+    if (administrador.length === 0) {
+      return res.status(404).json({ message: "Administrador não encontrado" }); // Retorna erro 404 se a questão não for encontrada
     }
 
     const data = req.body; // Obtém os dados do corpo da requisição
 
     // Usa o valor enviado ou mantém o valor atual do banco
-    data.link_imagem = data.link_imagem || imagem[0].link_imagem;
-
+    data.email = data.email|| administrador[0].email;
+    data.senha = data.senha|| administrador[0].senha;
     // Atualiza a questão
-    consulta = "UPDATE imagens SET link_imagem = $1 WHERE id = $2";
+    consulta = "UPDATE administrador SET email = $1, senha = $2 WHERE id = $3";
     // Executa a consulta SQL com os valores fornecidos
     resultado = await db.query(consulta, [
-      data.link_imagem,
+      data.email,
+      data.senha,
       id,
     ]);
 
-    res.status(200).json({ message: "Imagem atualizada com sucesso!" }); // Retorna o resultado da consulta como JSON
+    res.status(200).json({ message: "Administrador atualizado com sucesso!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao atualizar imagem:", e); // Log do erro no servidor
+    console.error("Erro ao atualizar o administrador:", e); // Log do erro no servidor
+    res.status(500).json({
+      erro: "Erro interno do servidor",
+    });
+  }
+});
+
+app.get("/contato", async (req, res) => {
+  //server.js
+  const db = conectarBD(); 
+  console.log("Rota GET /contato solicitado"); 
+ 
+  try {
+    const resultado = await db.query("SELECT * FROM contato"); 
+    const dados = resultado.rows; 
+    res.json(dados); 
+  } catch (e) {
+    console.error("Erro ao buscar dados do contato:", e); 
+    res.status(500).json({
+      erro: "Erro interno do servidor",
+      mensagem: "Não foi possível buscar os dados do contato",
+    });
+  }
+});
+
+app.get("/contato/:id", async (req, res) => {
+  console.log("Rota GET /contato/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+
+  try {
+    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const db = conectarBD(); // Conecta ao banco de dados
+    const consulta = "SELECT * FROM contato WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    const resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
+
+    // Verifica se a questão foi encontrada
+    if (dados.length === 0) {
+      return res.status(404).json({ mensagem: "Dados não encontrados" }); // Retorna erro 404 se a questão não for encontrada
+    }
+
+    res.json(dados); // Retorna o resultado da consulta como JSON
+  } catch (e) {
+    console.error("Erro ao buscar dados do contato:", e); // Log do erro no servidor
+    res.status(500).json({
+      erro: "Erro interno do servidor"
+    });
+  }
+});
+
+app.delete("/contato/:id", async (req, res) => {
+  console.log("Rota DELETE /contato/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+
+  try {
+    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const db = conectarBD(); // Conecta ao banco de dados
+    let consulta = "SELECT * FROM contato WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    let dados = resultado.rows; // Obtém as linhas retornadas pela consulta
+
+    // Verifica se o contato foi encontrado
+    if (dados.length === 0) {
+      return res.status(404).json({ mensagem: "Contato não encontrado" }); // Retorna erro 404 se a imagem não for encontrada
+    }
+
+    consulta = "DELETE FROM contato WHERE id = $1"; // Consulta SQL para deletar a imagem pelo ID
+    resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    res.status(200).json({ mensagem: "Contato excluido com sucesso!!" }); // Retorna o resultado da consulta como JSON
+  } catch (e) {
+    console.error("Erro ao excluir o contato", e); // Log do erro no servidor
+    res.status(500).json({
+      erro: "Erro interno do servidor"
+    });
+  }
+});
+
+app.post("/contato", async (req, res) => {
+  console.log("Rota POST /contato solicitado"); // Log no terminal para indicar que a rota foi acessada
+
+  try {
+    const data = req.body; // Obtém os dados do corpo da requisição
+    // Validação dos dados recebidos
+    if (!data.instagram || !data.facebook || !data.whatsapp || !data.email ) {
+      return res.status(400).json({
+        erro: "Dados inválidos",
+        mensagem:
+          "Os campus contendo instagram, facebook, whatsapp e email são obrigatórios",
+      });
+    }
+
+    const db = conectarBD(); // Conecta ao banco de dados
+
+    const consulta =
+      "INSERT INTO contato(instagram, facebook, whatsapp, email) VALUES ($4) "; // Consulta SQL para inserir a questão
+    const contato = [data.instagram, data.facebook, data.whatsapp, data.email]; // Array com os valores a serem inseridos
+    const resultado = await db.query(consulta, contato); // Executa a consulta SQL com os valores fornecidos
+    res.status(201).json({ mensagem: "Contato criado com sucesso!" }); // Retorna o resultado da consulta como JSON
+  } catch (e) {
+    console.error("Erro ao inserir contato:", e); // Log do erro no servidor
+    res.status(500).json({
+      erro: "Erro interno do servidor"
+    });
+  }
+});
+
+app.put("/contato/:id", async (req, res) => {
+  console.log("Rota PUT /contato solicitado"); // Log no terminal para indicar que a rota foi acessada
+
+  try {
+    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const db = conectarBD(); // Conecta ao banco de dados
+    let consulta = "SELECT * FROM contato WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    let contato = resultado.rows; // Obtém as linhas retornadas pela consulta
+
+    // Verifica se a imagem foi encontrada
+    if (contato.length === 0) {
+      return res.status(404).json({ message: "Contato não encontrado" }); // Retorna erro 404 se a questão não for encontrada
+    }
+
+    const data = req.body; // Obtém os dados do corpo da requisição
+
+    // Usa o valor enviado ou mantém o valor atual do banco
+    data.instagram = data.instagram|| contato[0].instagram;
+    data.facebook = data.facebook|| contato[0].facebook;
+    data.whatsapp = data.whatsapp|| contato[0].whatsapp;
+    data.email = data.email|| administrador[0].email;
+    // Atualiza o contato
+    consulta = "UPDATE contato SET instagram = $1, facebook = $2, whatsapp = $3, email = $4 WHERE id = $5";
+    // Executa a consulta SQL com os valores fornecidos
+    resultado = await db.query(consulta, [
+      data.instagram,
+      data.facebook,
+      data.whatsapp,
+      data.senha,
+      id,
+    ]);
+
+    res.status(200).json({ message: "Contato atualizado com sucesso!" }); // Retorna o resultado da consulta como JSON
+  } catch (e) {
+    console.error("Erro ao atualizar o contato:", e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor",
     });
