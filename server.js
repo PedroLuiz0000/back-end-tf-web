@@ -47,7 +47,7 @@ app.get("/", async (req, res) => {
 });
 
 
-app.get("/imagens", async (req, res) => {
+app.get("/imagens", async (req, res) => {})
   //server.js
   const db = conectarBD(); 
   console.log("Rota GET /imagens solicitada"); 
@@ -63,7 +63,6 @@ app.get("/imagens", async (req, res) => {
       mensagem: "Não foi possível buscar as imagens",
     });
   }
-});
 
 app.listen(port, () => {
   console.log(`Serviço rodando na porta:  ${port}`);
