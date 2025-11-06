@@ -1,38 +1,51 @@
-// ######
-// Local onde os pacotes de dependências serão importados
-// ######
-import express from "express";      // Requisição do pacote do express
+import express from "express"; // Requisição do pacote do express
+import pkg from "pg"; // Requisição do pacote do pg (PostgreSQL)
+import dotenv from "dotenv"; // Importa o pacote dotenv para carregar variáveis de ambiente
 
-// ######
-// Local onde as configurações do servidor serão feitas
-// ######
-const app = express();              // Instancia o Express
-const port = 3000;                  // Define a porta
 
-// ######
-// Local onde as rotas (endpoints) serão definidas
-// ######
-app.get("/", (req, res) => {        
-  // Rota raiz do servidor
-  // Rota GET /
-  // Esta rota é chamada quando o usuário acessa a raiz do servidor
-  // Ela retorna uma mensagem com informações do projeto
+const app = express(); // Inicializa o servidor Express
+//server.js - configuração do servidor
+app.use(express.json()); // Middleware para interpretar requisições com corpo em JSON
+const port = 3000; // Define a porta onde o servidor irá escutar
+dotenv.config(); // Carrega as variáveis de ambiente do arquivo .env
+const { Pool } = pkg; // Obtém o construtor Pool do pacote pg para gerenciar conexões com o banco de dados PostgreSQL
 
+let pool = null;
+
+//server.js
+// Função para obter uma conexão com o banco de dados
+function conectarBD() {
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.URL_BD,
+    });
+  }
+  return pool;
+}
+
+app.get("/", async (req, res) => {
+  //server.js
+  const db = conectarBD(); // Cria uma nova instância do Pool para gerenciar conexões com o banco de dados
   console.log("Rota GET / solicitada"); // Log no terminal para indicar que a rota foi acessada
-  
-  // Responde com um JSON contendo uma mensagem
+
+  let dbStatus = "ok";
+
+  // Tenta executar uma consulta simples para verificar a conexão com o banco de dados
+  // Se a consulta falhar, captura o erro e define o status do banco de dados como a mensagem de erro
+  try {
+    await db.query("SELECT 1");
+  } catch (e) {
+    dbStatus = e.message;
+  }
+
+// Responde com um JSON contendo uma mensagem, o nome do autor e o status da conexão com o banco de dados
   res.json({
-		descricao: "API para ___",    // Substitua pelo conteúdo da sua API
-    autor: "Seu_nome_completo",     // Substitua pelo seu nome
+    message: "API para o trabalho final",
+    author: "Gabrielly Thaila Moreira de Azevedo, Kailene Rodrigues de Souza,Lívia Santos Ventura,Maria Eduarda da Silva, Pedro Luiz Lopes Pereira",
+    dbStatus: dbStatus,
   });
 });
 
-// ######
-// Local onde o servidor escutar as requisições que chegam
-// ######
-app.listen(port, () => {
-  console.log(Serviço rodando na porta:  ${port});
-});
 
 app.get("/imagens", async (req, res) => {
   //server.js
@@ -50,6 +63,10 @@ app.get("/imagens", async (req, res) => {
       mensagem: "Não foi possível buscar as imagens",
     });
   }
+});
+
+app.listen(port, () => {
+  console.log(`Serviço rodando na porta:  ${port}`);
 });
 
 app.get("/imagens/:id", async (req, res) => {
