@@ -46,27 +46,30 @@ app.get("/", async (req, res) => {
   });
 });
 
-
-app.get("/imagens", async (req, res) => {})
+app.get("/imagens", async (req, res) => {
   //server.js
-  const db = conectarBD(); 
-  console.log("Rota GET /imagens solicitada"); 
- 
+  const db = conectarBD();
+  console.log("Rota GET /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
+""
   try {
-    const resultado = await db.query("SELECT * FROM imagens"); 
-    const dados = resultado.rows; 
-    res.json(dados); 
+    const resultado = await db.query("SELECT * FROM imagens"); // Executa uma consulta SQL para selecionar todas as questões
+    const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
+    res.json(dados); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao buscar imagens:", e); 
+    console.error("Erro ao buscar imagens:", e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor",
       mensagem: "Não foi possível buscar as imagens",
     });
   }
+});
 
 app.listen(port, () => {
+  // Inicia o servidor na porta definida
+  // Um socket para "escutar" as requisições
   console.log(`Serviço rodando na porta:  ${port}`);
 });
+
 
 app.get("/imagens/:id", async (req, res) => {
   console.log("Rota GET /imagens/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
