@@ -46,7 +46,7 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/imagem", async (req, res) => {
+app.get("/imagens", async (req, res) => {
   //server.js
   const db = conectarBD();
   console.log("Rota GET /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
