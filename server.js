@@ -211,7 +211,7 @@ app.get("/administrador/:id_admin", async (req, res) => {
   try {
     const id_admin = req.params.id_admin; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    const consulta = "SELECT * FROM administrador WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    const consulta = "SELECT * FROM administrador WHERE id_admin = $1"; // Consulta SQL para selecionar a questão pelo ID
     const resultado = await db.query(consulta, [id_admin]); // Executa a consulta SQL com o ID fornecido
     const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
 
@@ -222,7 +222,7 @@ app.get("/administrador/:id_admin", async (req, res) => {
 
     res.json(dados); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error(e); // Log do erro no servidor
+    console.error("Erro ao buscar dados do administrador:", e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
@@ -357,7 +357,7 @@ app.get("/contato/:id_contato", async (req, res) => {
 
     res.json(dados); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error(e); // Log do erro no servidor
+    console.error("Erro ao buscar contato:", e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
