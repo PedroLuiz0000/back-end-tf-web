@@ -56,7 +56,7 @@ app.get("/imagem", async (req, res) => {
     const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
     res.json(dados); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao buscar imagens:", e); // Log do erro no servidor
+    console.error(erro); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor",
       mensagem: "Não foi possível buscar as imagens",
