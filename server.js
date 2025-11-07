@@ -205,14 +205,14 @@ app.get("/administrador", async (req, res) => {
   }
 });
 
-app.get("/administrador/:id", async (req, res) => {
-  console.log("Rota GET /administrador/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+app.get("/administrador/:id_admin", async (req, res) => {
+  console.log("Rota GET /administrador/:id_admin solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
-    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const id_admin = req.params.id_admin; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
     const consulta = "SELECT * FROM administrador WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
-    const resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    const resultado = await db.query(consulta, [id_admin]); // Executa a consulta SQL com o ID fornecido
     const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
 
     // Verifica se o admin foi encontrado
@@ -229,14 +229,14 @@ app.get("/administrador/:id", async (req, res) => {
   }
 });
 
-app.delete("/administrador/:id", async (req, res) => {
-  console.log("Rota DELETE /administrador/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+app.delete("/administrador/:id_admin", async (req, res) => {
+  console.log("Rota DELETE /administrador/:id_admin solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
-    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const id_admin = req.params.id_admin; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    let consulta = "SELECT * FROM administrador WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
-    let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    let consulta = "SELECT * FROM administrador WHERE id_admin = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let resultado = await db.query(consulta, [id_admin]); // Executa a consulta SQL com o ID fornecido
     let dados = resultado.rows; // Obtém as linhas retornadas pela consulta
 
     // Verifica se o admin foi encontrado
@@ -244,8 +244,8 @@ app.delete("/administrador/:id", async (req, res) => {
       return res.status(404).json({ mensagem: "Administrador não encontrado" }); // Retorna erro 404 se a imagem não for encontrada
     }
 
-    consulta = "DELETE FROM administrador WHERE id = $1"; // Consulta SQL para deletar a imagem pelo ID
-    resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    consulta = "DELETE FROM administrador WHERE id_admin = $1"; // Consulta SQL para deletar a imagem pelo ID
+    resultado = await db.query(consulta, [id_admin]); // Executa a consulta SQL com o ID fornecido
     res.status(200).json({ mensagem: "Administrador excluido com sucesso!!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
     console.error("Erro ao excluir o administrador", e); // Log do erro no servidor
@@ -284,14 +284,14 @@ app.post("/administrador", async (req, res) => {
   }
 });
 
-app.put("/administrador/:id", async (req, res) => {
+app.put("/administrador/:id_admin", async (req, res) => {
   console.log("Rota PUT /administrador solicitado"); // Log no terminal para indicar que a rota foi acessada
 
   try {
-    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const id_admin = req.params.id_admin; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    let consulta = "SELECT * FROM administrador WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
-    let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    let consulta = "SELECT * FROM administrador WHERE id_admin = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let resultado = await db.query(consulta, [id_admin]); // Executa a consulta SQL com o ID fornecido
     let administradores = resultado.rows; // Obtém as linhas retornadas pela consulta
 
     // Verifica se a imagem foi encontrada
@@ -305,12 +305,12 @@ app.put("/administrador/:id", async (req, res) => {
     data.email = data.email|| administradores[0].email;
     data.senha = data.senha|| administradores[0].senha;
     // Atualiza a questão
-    consulta = "UPDATE administrador SET email = $1, senha = $2 WHERE id = $3";
+    consulta = "UPDATE administrador SET email = $1, senha = $2 WHERE id_admin= $3";
     // Executa a consulta SQL com os valores fornecidos
     resultado = await db.query(consulta, [
       data.email,
       data.senha,
-      id,
+      id_admin,
     ]);
 
     res.status(200).json({ message: "Administrador atualizado com sucesso!" }); // Retorna o resultado da consulta como JSON
@@ -340,14 +340,14 @@ app.get("/contato", async (req, res) => {
   }
 });
 
-app.get("/contato/:id", async (req, res) => {
-  console.log("Rota GET /contato/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+app.get("/contato/:id_contato", async (req, res) => {
+  console.log("Rota GET /contato/:id_contato solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
-    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const id_contato = req.params.id_contato; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    const consulta = "SELECT * FROM contato WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
-    const resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    const consulta = "SELECT * FROM contato WHERE id_contato = $1"; // Consulta SQL para selecionar a questão pelo ID
+    const resultado = await db.query(consulta, [id_contato]); // Executa a consulta SQL com o ID fornecido
     const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
 
     // Verifica se a questão foi encontrada
@@ -364,14 +364,14 @@ app.get("/contato/:id", async (req, res) => {
   }
 });
 
-app.delete("/contato/:id", async (req, res) => {
-  console.log("Rota DELETE /contato/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+app.delete("/contato/:id_contato", async (req, res) => {
+  console.log("Rota DELETE /contato/:id_contato solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
-    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const id_contato = req.params.id_contato; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    let consulta = "SELECT * FROM contato WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
-    let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    let consulta = "SELECT * FROM contato WHERE id_contato = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let resultado = await db.query(consulta, [id_contato]); // Executa a consulta SQL com o ID fornecido
     let dados = resultado.rows; // Obtém as linhas retornadas pela consulta
 
     // Verifica se o contato foi encontrado
@@ -379,8 +379,8 @@ app.delete("/contato/:id", async (req, res) => {
       return res.status(404).json({ mensagem: "Contato não encontrado" }); // Retorna erro 404 se a imagem não for encontrada
     }
 
-    consulta = "DELETE FROM contato WHERE id = $1"; // Consulta SQL para deletar a imagem pelo ID
-    resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    consulta = "DELETE FROM contato WHERE id_contato = $1"; // Consulta SQL para deletar a imagem pelo ID
+    resultado = await db.query(consulta, [id_contato]); // Executa a consulta SQL com o ID fornecido
     res.status(200).json({ mensagem: "Contato excluido com sucesso!!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
     console.error("Erro ao excluir o contato", e); // Log do erro no servidor
@@ -419,14 +419,14 @@ app.post("/contato", async (req, res) => {
   }
 });
 
-app.put("/contato/:id", async (req, res) => {
+app.put("/contato/:id_contato", async (req, res) => {
   console.log("Rota PUT /contato solicitado"); // Log no terminal para indicar que a rota foi acessada
 
   try {
-    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const id_contato = req.params.id_contato; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    let consulta = "SELECT * FROM contato WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
-    let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    let consulta = "SELECT * FROM contato WHERE id_contato = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let resultado = await db.query(consulta, [id_contato]); // Executa a consulta SQL com o ID fornecido
     let contatos = resultado.rows; // Obtém as linhas retornadas pela consulta
 
     // Verifica se a imagem foi encontrada
@@ -442,14 +442,14 @@ app.put("/contato/:id", async (req, res) => {
     data.whatsapp = data.whatsapp|| contatos[0].whatsapp;
     data.email = data.email|| contatos[0].email;
     // Atualiza o contato
-    consulta = "UPDATE contato SET instagram = $1, facebook = $2, whatsapp = $3, email = $4 WHERE id = $5";
+    consulta = "UPDATE contato SET instagram = $1, facebook = $2, whatsapp = $3, email = $4 WHERE id_contato = $5";
     // Executa a consulta SQL com os valores fornecidos
     resultado = await db.query(consulta, [
       data.instagram,
       data.facebook,
       data.whatsapp,
       data.senha,
-      id,
+      id_contato,
     ]);
 
     res.status(200).json({ message: "Contato atualizado com sucesso!" }); // Retorna o resultado da consulta como JSON
