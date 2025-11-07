@@ -49,10 +49,10 @@ app.get("/", async (req, res) => {
 app.get("/imagem", async (req, res) => {
   //server.js
   const db = conectarBD();
-  console.log("Rota GET /imagem solicitada"); // Log no terminal para indicar que a rota foi acessada
+  console.log("Rota GET /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
 ""
   try {
-    const resultado = await db.query("SELECT * FROM imagem"); // Executa uma consulta SQL para selecionar todas as questões
+    const resultado = await db.query("SELECT * FROM imagens"); // Executa uma consulta SQL para selecionar todas as questões
     const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
     res.json(dados); // Retorna o resultado da consulta como JSON
   } catch (e) {
@@ -71,13 +71,13 @@ app.listen(port, () => {
 });
 
 
-app.get("/imagem/:id", async (req, res) => {
-  console.log("Rota GET /imagem/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+app.get("/imagens/:id", async (req, res) => {
+  console.log("Rota GET /imagens/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
     const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    const consulta = "SELECT * FROM imagem WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    const consulta = "SELECT * FROM imagens WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
     const resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
     const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
 
@@ -95,13 +95,13 @@ app.get("/imagem/:id", async (req, res) => {
   }
 });
 
-app.delete("/imagem/:id", async (req, res) => {
-  console.log("Rota DELETE /imagem/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+app.delete("/imagens/:id", async (req, res) => {
+  console.log("Rota DELETE /imagens/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
     const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    let consulta = "SELECT * FROM imagem WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let consulta = "SELECT * FROM imagens WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
     let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
     let dados = resultado.rows; // Obtém as linhas retornadas pela consulta
 
@@ -110,7 +110,7 @@ app.delete("/imagem/:id", async (req, res) => {
       return res.status(404).json({ mensagem: "Imagem não encontrada" }); // Retorna erro 404 se a imagem não for encontrada
     }
 
-    consulta = "DELETE FROM imagem WHERE id = $1"; // Consulta SQL para deletar a imagem pelo ID
+    consulta = "DELETE FROM imagens WHERE id = $1"; // Consulta SQL para deletar a imagem pelo ID
     resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
     res.status(200).json({ mensagem: "Imagem excluida com sucesso!!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
@@ -121,8 +121,8 @@ app.delete("/imagem/:id", async (req, res) => {
   }
 });
 
-app.post("/imagem", async (req, res) => {
-  console.log("Rota POST /imagem solicitada"); // Log no terminal para indicar que a rota foi acessada
+app.post("/imagens", async (req, res) => {
+  console.log("Rota POST /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
     const data = req.body; // Obtém os dados do corpo da requisição
@@ -138,9 +138,9 @@ app.post("/imagem", async (req, res) => {
     const db = conectarBD(); // Conecta ao banco de dados
 
     const consulta =
-      "INSERT INTO imagem(link_img) VALUES ($1) "; // Consulta SQL para inserir a questão
-    const imagens = [data.link_img]; // Array com os valores a serem inseridos
-    const resultado = await db.query(consulta, imagens); // Executa a consulta SQL com os valores fornecidos
+      "INSERT INTO imagens(link_imagem) VALUES ($1) "; // Consulta SQL para inserir a questão
+    const imagem= [data.link_img]; // Array com os valores a serem inseridos
+    const resultado = await db.query(consulta, imagem); // Executa a consulta SQL com os valores fornecidos
     res.status(201).json({ mensagem: "Imagem criada com sucesso!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
     console.error("Erro ao inserir imagem:", e); // Log do erro no servidor
@@ -150,31 +150,31 @@ app.post("/imagem", async (req, res) => {
   }
 });
 
-app.put("/imagem/:id", async (req, res) => {
-  console.log("Rota PUT /imagem solicitada"); // Log no terminal para indicar que a rota foi acessada
+app.put("/imagens/:id", async (req, res) => {
+  console.log("Rota PUT /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
     const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
     const db = conectarBD(); // Conecta ao banco de dados
-    let consulta = "SELECT * FROM imagem WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let consulta = "SELECT * FROM imagens WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
     let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
-    let imagens = resultado.rows; // Obtém as linhas retornadas pela consulta
+    let imagem = resultado.rows; // Obtém as linhas retornadas pela consulta
 
     // Verifica se a imagem foi encontrada
-    if (imagens.length === 0) {
+    if (imagem.length === 0) {
       return res.status(404).json({ message: "Imagem não encontrada" }); // Retorna erro 404 se a questão não for encontrada
     }
 
     const data = req.body; // Obtém os dados do corpo da requisição
 
     // Usa o valor enviado ou mantém o valor atual do banco
-    data.link_img = data.link_img || imagens[0].link_img;
+    data.link_imagem = data.link_imagem || imagem[0].link_imagem;
 
     // Atualiza a questão
     consulta = "UPDATE imagem SET link_img = $1 WHERE id = $2";
     // Executa a consulta SQL com os valores fornecidos
     resultado = await db.query(consulta, [
-      data.link_img,
+      data.link_imagem,
       id,
     ]);
 
