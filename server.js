@@ -222,7 +222,7 @@ app.get("/administrador/:id", async (req, res) => {
 
     res.json(dados); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao buscar dados do admistrador:", e); // Log do erro no servidor
+    console.error(e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
@@ -357,7 +357,7 @@ app.get("/contato/:id", async (req, res) => {
 
     res.json(dados); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao buscar dados do contato:", e); // Log do erro no servidor
+    console.error(e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
