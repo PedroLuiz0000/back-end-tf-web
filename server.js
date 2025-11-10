@@ -168,13 +168,13 @@ app.put("/imagens/:id", async (req, res) => {
     const data = req.body; // Obtém os dados do corpo da requisição
 
     // Usa o valor enviado ou mantém o valor atual do banco
-    data.link_imagem = data.link_imagem || imagem[0].link_imagem;
+    data.link_img= data.link_img || imagem[0].link_img;
 
     // Atualiza a questão
     consulta = "UPDATE imagem SET link_img = $1 WHERE id = $2";
     // Executa a consulta SQL com os valores fornecidos
     resultado = await db.query(consulta, [
-      data.link_imagem,
+      data.link_img,
       id,
     ]);
 
