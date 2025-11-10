@@ -272,7 +272,7 @@ app.post("/administrador", async (req, res) => {
     const db = conectarBD(); // Conecta ao banco de dados
 
     const consulta =
-      "INSERT INTO administrador(email, senha ) VALUES ($2) "; // Consulta SQL para inserir a questão
+      "INSERT INTO administrador(email, senha ) VALUES ($1,$2) "; // Consulta SQL para inserir a questão
     const administradores  = [data.email, data.senha]; // Array com os valores a serem inseridos
     const resultado = await db.query(consulta, administradores); // Executa a consulta SQL com os valores fornecidos
     res.status(201).json({ mensagem: "Administrador criado com sucesso!" }); // Retorna o resultado da consulta como JSON
@@ -407,7 +407,7 @@ app.post("/contato", async (req, res) => {
     const db = conectarBD(); // Conecta ao banco de dados
 
     const consulta =
-      "INSERT INTO contato(instagram, facebook, whatsapp, email) VALUES ($4) "; // Consulta SQL para inserir a questão
+      "INSERT INTO contato(instagram, facebook, whatsapp, email) VALUES ($1,$2,$3,$4) "; // Consulta SQL para inserir a questão
     const contatos = [data.instagram, data.facebook, data.whatsapp, data.email]; // Array com os valores a serem inseridos
     const resultado = await db.query(consulta, contatos); // Executa a consulta SQL com os valores fornecidos
     res.status(201).json({ mensagem: "Contato criado com sucesso!" }); // Retorna o resultado da consulta como JSON
@@ -448,7 +448,7 @@ app.put("/contato/:id_contato", async (req, res) => {
       data.instagram,
       data.facebook,
       data.whatsapp,
-      data.senha,
+      data.email,
       id_contato,
     ]);
 
