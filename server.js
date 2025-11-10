@@ -412,7 +412,7 @@ app.post("/contato", async (req, res) => {
     const resultado = await db.query(consulta, contatos); // Executa a consulta SQL com os valores fornecidos
     res.status(201).json({ mensagem: "Contato criado com sucesso!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao inserir contato:", e); // Log do erro no servidor
+    console.error(e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
