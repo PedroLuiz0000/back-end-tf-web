@@ -322,6 +322,35 @@ app.put("/administrador/:id_admin", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  console.log("Rota POST /login solicitado"); // Log no terminal para indicar que a rota foi acessada
+
+  try {
+    const data = req.body; // Obtém os dados do corpo da requisição
+    // Validação dos dados recebidos
+    if (!data.email || !data.senha) {
+      return res.status(400).json({
+        erro: "Dados inválidos",
+        mensagem:
+          "Os campus contendo o email e a senha são obrigatórios",
+      });
+    }
+
+    const db = conectarBD(); // Conecta ao banco de dados
+
+    const consulta =
+      "SELECT * FROM administrador WHERE email=$1 and senha=$2"; // Consulta SQL para inserir a questão
+    const login  = [data.email, data.senha]; // Array com os valores a serem inseridos
+    const resultado = await db.query(consulta, login); // Executa a consulta SQL com os valores fornecidos
+    res.status(201).json({ mensagem: "Login criado com sucesso!" }); // Retorna o resultado da consulta como JSON
+  } catch (e) {
+    console.error("Erro ao inserir login:", e); // Log do erro no servidor
+    res.status(500).json({
+      erro: "Erro interno do servidor"
+    });
+  }
+});
+
 app.get("/contato", async (req, res) => {
   //server.js
   const db = conectarBD(); 
