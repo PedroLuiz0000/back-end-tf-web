@@ -150,7 +150,7 @@ app.post("/imagens", async (req, res) => {
   }
 });
 
-app.put("/imagens/:id", async (req, res) => {
+/* app.put("/imagens/:id", async (req, res) => {
   console.log("Rota PUT /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
@@ -185,7 +185,7 @@ app.put("/imagens/:id", async (req, res) => {
       erro: "Erro interno do servidor",
     });
   }
-});
+});*/
 
 app.get("/administrador", async (req, res) => {
   //server.js
@@ -342,7 +342,7 @@ app.post("/login", async (req, res) => {
       "SELECT * FROM administrador WHERE email=$1 and senha=$2"; // Consulta SQL para inserir a questão
     const login  = [data.email, data.senha]; // Array com os valores a serem inseridos
     const resultado = await db.query(consulta, login); // Executa a consulta SQL com os valores fornecidos
-    res.status(201).json({ mensagem: "Login criado com sucesso!" }); // Retorna o resultado da consulta como JSON
+    res.status(201).json({ mensagem: "Administrador realizou o login com sucesso!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
     console.error("Erro ao inserir login:", e); // Log do erro no servidor
     res.status(500).json({
