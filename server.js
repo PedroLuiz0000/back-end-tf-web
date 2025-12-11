@@ -1,10 +1,12 @@
 import express from "express"; // Requisição do pacote do express
 import pkg from "pg"; // Requisição do pacote do pg (PostgreSQL)
 import dotenv from "dotenv"; // Importa o pacote dotenv para carregar variáveis de ambiente
+import cors from "cors";
 
 
 const app = express(); // Inicializa o servidor Express
 //server.js - configuração do servidor
+app.use(cors());
 app.use(express.json()); // Middleware para interpretar requisições com corpo em JSON
 const port = 3000; // Define a porta onde o servidor irá escutar
 dotenv.config(); // Carrega as variáveis de ambiente do arquivo .env
