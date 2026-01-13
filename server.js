@@ -49,16 +49,15 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/imagens", async (req, res) => {
-  //server.js
   const db = conectarBD();
-  console.log("Rota GET /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
-""
+  console.log("Rota GET /imagens solicitada");
+
   try {
-    const resultado = await db.query("SELECT * FROM imagens"); // Executa uma consulta SQL para selecionar todas as questões
-    const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
-    res.json(dados); // Retorna o resultado da consulta como JSON
+    const resultado = await db.query("SELECT * FROM imagem"); // ← CORRIGIDO
+    const dados = resultado.rows;
+    res.json(dados);
   } catch (e) {
-    console.error(e); // Log do erro no servidor
+    console.error(e);
     res.status(500).json({
       erro: "Erro interno do servidor",
       mensagem: "Não foi possível buscar as imagens",
@@ -66,31 +65,23 @@ app.get("/imagens", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  // Inicia o servidor na porta definida
-  // Um socket para "escutar" as requisições
-  console.log(`Serviço rodando na porta:  ${port}`);
-});
-
-
 app.get("/imagens/:id", async (req, res) => {
-  console.log("Rota GET /imagens/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+  console.log("Rota GET /imagens/:id solicitada");
 
   try {
-    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
-    const db = conectarBD(); // Conecta ao banco de dados
-    const consulta = "SELECT * FROM imagens WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
-    const resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
-    const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
+    const id = req.params.id;
+    const db = conectarBD();
+    const consulta = "SELECT * FROM imagem WHERE id_imagem = $1"; // ← CORRIGIDO
+    const resultado = await db.query(consulta, [id]);
+    const dados = resultado.rows;
 
-    // Verifica se a questão foi encontrada
     if (dados.length === 0) {
-      return res.status(404).json({ mensagem: "Imagem não encontrada" }); // Retorna erro 404 se a questão não for encontrada
+      return res.status(404).json({ mensagem: "Imagem não encontrada" });
     }
 
-    res.json(dados); // Retorna o resultado da consulta como JSON
+    res.json(dados);
   } catch (e) {
-    console.error("Erro ao buscar questão:", e); // Log do erro no servidor
+    console.error("Erro ao buscar imagem:", e);
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
@@ -98,25 +89,24 @@ app.get("/imagens/:id", async (req, res) => {
 });
 
 app.delete("/imagens/:id", async (req, res) => {
-  console.log("Rota DELETE /imagens/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
+  console.log("Rota DELETE /imagens/:id solicitada");
 
   try {
-    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
-    const db = conectarBD(); // Conecta ao banco de dados
-    let consulta = "SELECT * FROM imagens WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
-    let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
-    let dados = resultado.rows; // Obtém as linhas retornadas pela consulta
+    const id = req.params.id;
+    const db = conectarBD();
+    let consulta = "SELECT * FROM imagem WHERE id_imagem = $1"; // ← CORRIGIDO
+    let resultado = await db.query(consulta, [id]);
+    let dados = resultado.rows;
 
-    // Verifica se a imagem foi encontrada
     if (dados.length === 0) {
-      return res.status(404).json({ mensagem: "Imagem não encontrada" }); // Retorna erro 404 se a imagem não for encontrada
+      return res.status(404).json({ mensagem: "Imagem não encontrada" });
     }
 
-    consulta = "DELETE FROM imagens WHERE id = $1"; // Consulta SQL para deletar a imagem pelo ID
-    resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
-    res.status(200).json({ mensagem: "Imagem excluida com sucesso!!" }); // Retorna o resultado da consulta como JSON
+    consulta = "DELETE FROM imagem WHERE id_imagem = $1"; // ← CORRIGIDO
+    resultado = await db.query(consulta, [id]);
+    res.status(200).json({ mensagem: "Imagem excluida com sucesso!!" });
   } catch (e) {
-    console.error("Erro ao excluir imagem:", e); // Log do erro no servidor
+    console.error("Erro ao excluir imagem:", e);
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
@@ -124,28 +114,26 @@ app.delete("/imagens/:id", async (req, res) => {
 });
 
 app.post("/imagens", async (req, res) => {
-  console.log("Rota POST /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
+  console.log("Rota POST /imagens solicitada");
 
   try {
-    const data = req.body; // Obtém os dados do corpo da requisição
-    // Validação dos dados recebidos
+    const data = req.body;
+    
     if (!data.link_img) {
       return res.status(400).json({
         erro: "Dados inválidos",
-        mensagem:
-          "O campo contendo o link da imagem é obrigatório",
+        mensagem: "O campo contendo o link da imagem é obrigatório",
       });
     }
 
-    const db = conectarBD(); // Conecta ao banco de dados
+    const db = conectarBD();
 
-    const consulta =
-      "INSERT INTO imagens(link_imagem) VALUES ($1) "; // Consulta SQL para inserir a questão
-    const imagem= [data.link_img]; // Array com os valores a serem inseridos
-    const resultado = await db.query(consulta, imagem); // Executa a consulta SQL com os valores fornecidos
-    res.status(201).json({ mensagem: "Imagem criada com sucesso!" }); // Retorna o resultado da consulta como JSON
+    const consulta = "INSERT INTO imagem(link_img) VALUES ($1)"; // ← CORRIGIDO
+    const imagem = [data.link_img];
+    const resultado = await db.query(consulta, imagem);
+    res.status(201).json({ mensagem: "Imagem criada com sucesso!" });
   } catch (e) {
-    console.error("Erro ao inserir imagem:", e); // Log do erro no servidor
+    console.error("Erro ao inserir imagem:", e);
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
