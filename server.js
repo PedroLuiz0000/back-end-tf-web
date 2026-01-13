@@ -325,28 +325,38 @@ app.put("/administrador/:id_admin", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  console.log("Rota POST /login solicitado"); // Log no terminal para indicar que a rota foi acessada
+  console.log("Rota POST /login solicitado");
 
   try {
-    const data = req.body; // Obtém os dados do corpo da requisição
-    // Validação dos dados recebidos
+    const data = req.body;
+    
     if (!data.email || !data.senha) {
       return res.status(400).json({
         erro: "Dados inválidos",
-        mensagem:
-          "Os campus contendo o email e a senha são obrigatórios",
+        mensagem: "Os campos email e senha são obrigatórios"
       });
     }
 
-    const db = conectarBD(); // Conecta ao banco de dados
+    const db = conectarBD();
+    const consulta = "SELECT * FROM administrador WHERE email=$1 AND senha=$2";
+    const resultado = await db.query(consulta, [data.email, data.senha]);
+    
+    // VERIFICA SE ENCONTROU O USUÁRIO
+    if (resultado.rows.length === 0) {
+      return res.status(401).json({
+        erro: "Credenciais inválidas",
+        mensagem: "Email ou senha incorretos!"
+      });
+    }
 
-    const consulta =
-      "SELECT * FROM administrador WHERE email=$1 and senha=$2"; // Consulta SQL para inserir a questão
-    const login  = [data.email, data.senha]; // Array com os valores a serem inseridos
-    const resultado = await db.query(consulta, login); // Executa a consulta SQL com os valores fornecidos
-    res.status(201).json({ mensagem: "Administrador realizou o login com sucesso!" }); // Retorna o resultado da consulta como JSON
+    // Login bem-sucedido
+    res.status(200).json({ 
+      mensagem: "Login realizado com sucesso!",
+      usuario: resultado.rows[0].email 
+    });
+    
   } catch (e) {
-    console.error("Erro ao inserir login:", e); // Log do erro no servidor
+    console.error("Erro ao fazer login:", e);
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
