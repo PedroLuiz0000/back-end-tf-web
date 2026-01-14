@@ -64,13 +64,30 @@ app.get("/imagens", async (req, res) => {
   }
 });
 
+app.get("/imagens", async (req, res) => {
+  const db = conectarBD();
+  console.log("Rota GET /imagens solicitada");
+
+  try {
+    const resultado = await db.query("SELECT * FROM imagens"); // ← Volta para "imagens"
+    const dados = resultado.rows;
+    res.json(dados);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      erro: "Erro interno do servidor",
+      mensagem: "Não foi possível buscar as imagens",
+    });
+  }
+});
+
 app.get("/imagens/:id", async (req, res) => {
   console.log("Rota GET /imagens/:id solicitada");
 
   try {
     const id = req.params.id;
     const db = conectarBD();
-    const consulta = "SELECT * FROM imagem WHERE id_imagem = $1"; // ← CORRIGIDO
+    const consulta = "SELECT * FROM imagens WHERE id = $1"; // ← Volta para "imagens" e "id"
     const resultado = await db.query(consulta, [id]);
     const dados = resultado.rows;
 
@@ -80,7 +97,7 @@ app.get("/imagens/:id", async (req, res) => {
 
     res.json(dados);
   } catch (e) {
-    console.error("Erro ao buscar imagem:", e);
+    console.error("Erro ao buscar questão:", e);
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
@@ -93,7 +110,7 @@ app.delete("/imagens/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const db = conectarBD();
-    let consulta = "SELECT * FROM imagem WHERE id_imagem = $1"; // ← CORRIGIDO
+    let consulta = "SELECT * FROM imagens WHERE id = $1"; // ← Volta
     let resultado = await db.query(consulta, [id]);
     let dados = resultado.rows;
 
@@ -101,7 +118,7 @@ app.delete("/imagens/:id", async (req, res) => {
       return res.status(404).json({ mensagem: "Imagem não encontrada" });
     }
 
-    consulta = "DELETE FROM imagem WHERE id_imagem = $1"; // ← CORRIGIDO
+    consulta = "DELETE FROM imagens WHERE id = $1"; // ← Volta
     resultado = await db.query(consulta, [id]);
     res.status(200).json({ mensagem: "Imagem excluida com sucesso!!" });
   } catch (e) {
@@ -127,7 +144,7 @@ app.post("/imagens", async (req, res) => {
 
     const db = conectarBD();
 
-    const consulta = "INSERT INTO imagem(link_img) VALUES ($1)"; // ← CORRIGIDO
+    const consulta = "INSERT INTO imagens(link_imagem) VALUES ($1)"; // ← AQUI: link_imagem
     const imagem = [data.link_img];
     const resultado = await db.query(consulta, imagem);
     res.status(201).json({ mensagem: "Imagem criada com sucesso!" });
@@ -138,7 +155,6 @@ app.post("/imagens", async (req, res) => {
     });
   }
 });
-
 /* app.put("/imagens/:id", async (req, res) => {
   console.log("Rota PUT /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
 
