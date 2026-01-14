@@ -1,14 +1,15 @@
-import express from "express";
-import pkg from "pg";
-import dotenv from "dotenv";
+import express from "express"; // Requisição do pacote do express
+import pkg from "pg"; // Requisição do pacote do pg (PostgreSQL)
+import dotenv from "dotenv"; // Importa o pacote dotenv para carregar variáveis de ambiente
 import cors from "cors";
 
-const app = express();
-app.use(cors());
-app.use(express.json());
 
-const port = 3000;
-dotenv.config();
+const app = express(); // Inicializa o servidor Express
+//server.js - configuração do servidor
+app.use(cors());
+app.use(express.json()); // Middleware para interpretar requisições com corpo em JSON
+const port = 3000; // Define a porta onde o servidor irá escutar
+dotenv.config(); // Carrega as variáveis de ambiente do arquivo .env
 const { Pool } = pkg; // Obtém o construtor Pool do pacote pg para gerenciar conexões com o banco de dados PostgreSQL
 
 let pool = null;
@@ -48,15 +49,16 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/imagens", async (req, res) => {
+  //server.js
   const db = conectarBD();
-  console.log("Rota GET /imagens solicitada");
-
+  console.log("Rota GET /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
+""
   try {
-    const resultado = await db.query("SELECT * FROM imagem"); // ← CORRIGIDO
-    const dados = resultado.rows;
-    res.json(dados);
+    const resultado = await db.query("SELECT * FROM imagens"); // Executa uma consulta SQL para selecionar todas as questões
+    const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
+    res.json(dados); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error(e);
+    console.error(e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor",
       mensagem: "Não foi possível buscar as imagens",
@@ -64,40 +66,31 @@ app.get("/imagens", async (req, res) => {
   }
 });
 
-app.get("/imagens", async (req, res) => {
-  const db = conectarBD();
-  console.log("Rota GET /imagens solicitada");
-
-  try {
-    const resultado = await db.query("SELECT * FROM imagens"); // ← Volta para "imagens"
-    const dados = resultado.rows;
-    res.json(dados);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({
-      erro: "Erro interno do servidor",
-      mensagem: "Não foi possível buscar as imagens",
-    });
-  }
+app.listen(port, () => {
+  // Inicia o servidor na porta definida
+  // Um socket para "escutar" as requisições
+  console.log(`Serviço rodando na porta:  ${port}`);
 });
+
 
 app.get("/imagens/:id", async (req, res) => {
-  console.log("Rota GET /imagens/:id solicitada");
+  console.log("Rota GET /imagens/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
-    const id = req.params.id;
-    const db = conectarBD();
-    const consulta = "SELECT * FROM imagens WHERE id = $1"; // ← Volta para "imagens" e "id"
-    const resultado = await db.query(consulta, [id]);
-    const dados = resultado.rows;
+    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const db = conectarBD(); // Conecta ao banco de dados
+    const consulta = "SELECT * FROM imagens WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    const resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    const dados = resultado.rows; // Obtém as linhas retornadas pela consulta
 
+    // Verifica se a questão foi encontrada
     if (dados.length === 0) {
-      return res.status(404).json({ mensagem: "Imagem não encontrada" });
+      return res.status(404).json({ mensagem: "Imagem não encontrada" }); // Retorna erro 404 se a questão não for encontrada
     }
 
-    res.json(dados);
+    res.json(dados); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao buscar questão:", e);
+    console.error("Erro ao buscar questão:", e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
@@ -105,24 +98,25 @@ app.get("/imagens/:id", async (req, res) => {
 });
 
 app.delete("/imagens/:id", async (req, res) => {
-  console.log("Rota DELETE /imagens/:id solicitada");
+  console.log("Rota DELETE /imagens/:id solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
-    const id = req.params.id;
-    const db = conectarBD();
-    let consulta = "SELECT * FROM imagens WHERE id = $1"; // ← Volta
-    let resultado = await db.query(consulta, [id]);
-    let dados = resultado.rows;
+    const id = req.params.id; // Obtém o ID da questão a partir dos parâmetros da URL
+    const db = conectarBD(); // Conecta ao banco de dados
+    let consulta = "SELECT * FROM imagens WHERE id = $1"; // Consulta SQL para selecionar a questão pelo ID
+    let resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    let dados = resultado.rows; // Obtém as linhas retornadas pela consulta
 
+    // Verifica se a imagem foi encontrada
     if (dados.length === 0) {
-      return res.status(404).json({ mensagem: "Imagem não encontrada" });
+      return res.status(404).json({ mensagem: "Imagem não encontrada" }); // Retorna erro 404 se a imagem não for encontrada
     }
 
-    consulta = "DELETE FROM imagens WHERE id = $1"; // ← Volta
-    resultado = await db.query(consulta, [id]);
-    res.status(200).json({ mensagem: "Imagem excluida com sucesso!!" });
+    consulta = "DELETE FROM imagens WHERE id = $1"; // Consulta SQL para deletar a imagem pelo ID
+    resultado = await db.query(consulta, [id]); // Executa a consulta SQL com o ID fornecido
+    res.status(200).json({ mensagem: "Imagem excluida com sucesso!!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao excluir imagem:", e);
+    console.error("Erro ao excluir imagem:", e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
@@ -130,31 +124,34 @@ app.delete("/imagens/:id", async (req, res) => {
 });
 
 app.post("/imagens", async (req, res) => {
-  console.log("Rota POST /imagens solicitada");
+  console.log("Rota POST /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
 
   try {
-    const data = req.body;
-    
+    const data = req.body; // Obtém os dados do corpo da requisição
+    // Validação dos dados recebidos
     if (!data.link_img) {
       return res.status(400).json({
         erro: "Dados inválidos",
-        mensagem: "O campo contendo o link da imagem é obrigatório",
+        mensagem:
+          "O campo contendo o link da imagem é obrigatório",
       });
     }
 
-    const db = conectarBD();
+    const db = conectarBD(); // Conecta ao banco de dados
 
-    const consulta = "INSERT INTO imagens(link_imagem) VALUES ($1)"; // ← AQUI: link_imagem
-    const imagem = [data.link_img];
-    const resultado = await db.query(consulta, imagem);
-    res.status(201).json({ mensagem: "Imagem criada com sucesso!" });
+    const consulta =
+      "INSERT INTO imagens(link_imagem) VALUES ($1) "; // Consulta SQL para inserir a questão
+    const imagem= [data.link_img]; // Array com os valores a serem inseridos
+    const resultado = await db.query(consulta, imagem); // Executa a consulta SQL com os valores fornecidos
+    res.status(201).json({ mensagem: "Imagem criada com sucesso!" }); // Retorna o resultado da consulta como JSON
   } catch (e) {
-    console.error("Erro ao inserir imagem:", e);
+    console.error("Erro ao inserir imagem:", e); // Log do erro no servidor
     res.status(500).json({
       erro: "Erro interno do servidor"
     });
   }
 });
+
 /* app.put("/imagens/:id", async (req, res) => {
   console.log("Rota PUT /imagens solicitada"); // Log no terminal para indicar que a rota foi acessada
 
