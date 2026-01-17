@@ -431,27 +431,6 @@ app.delete("/contato/:id_contato", async (req, res) => {
   }
 });
 
-app.delete("/estilos/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query("DELETE FROM estilos_design WHERE id_estilo = $1 RETURNING *", [id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ mensagem: "Estilo não encontrado." });
-    }
-
-    res.status(200).json({ mensagem: "Estilo removido com sucesso!" });
-  } catch (err) {
-    console.error("Erro ao deletar estilo:", err);
-    res.status(500).json({ erro: "Erro interno do servidor" });
-  }
-});
-
-
-app.listen(port, () => {            // Um socket para "escutar" as requisições
-  console.log(`Serviço rodando na porta:  ${port}`);
-});
-
 
 
 // ========================================
@@ -501,38 +480,7 @@ app.get("/imagens", async (req, res) => {
   }
 });
 
-// 🔹 Deletar imagem (DELETE)
-app.delete("/imagens/:id", async (req, res) => {
-  console.log("Rota DELETE /imagens/:id solicitada");
-  
-  try {
-    const { id } = req.params;
-    const db = conectarBD();
-    
-    let consulta = "SELECT * FROM imagens WHERE id = $1";
-    let resultado = await db.query(consulta, [id]);
-    
-    if (resultado.rows.length === 0) {
-      return res.status(404).json({ mensagem: "Imagem não encontrada" });
-    }
-    
-    consulta = "DELETE FROM imagens WHERE id = $1";
-    await db.query(consulta, [id]);
-    
-    res.json({ mensagem: "Imagem removida com sucesso!" });
-  } catch (e) {
-    console.error("Erro ao deletar imagem:", e);
-    res.status(500).json({ erro: "Erro interno do servidor" });
-  }
-});
 
-// ========================================
-// FIM DAS ROTAS DE IMAGENS
-// ========================================
-
-app.listen(port, () => {
-  console.log(`Serviço rodando na porta:  ${port}`);
-});
 
 
 // 🔹 Adicionar imagem (POST)
@@ -578,38 +526,7 @@ app.get("/imagens", async (req, res) => {
   }
 });
 
-// 🔹 Deletar imagem (DELETE)
-app.delete("/imagens/:id", async (req, res) => {
-  console.log("Rota DELETE /imagens/:id solicitada");
-  
-  try {
-    const { id } = req.params;
-    const db = conectarBD();
-    
-    let consulta = "SELECT * FROM imagens WHERE id = $1";
-    let resultado = await db.query(consulta, [id]);
-    
-    if (resultado.rows.length === 0) {
-      return res.status(404).json({ mensagem: "Imagem não encontrada" });
-    }
-    
-    consulta = "DELETE FROM imagens WHERE id = $1";
-    await db.query(consulta, [id]);
-    
-    res.json({ mensagem: "Imagem removida com sucesso!" });
-  } catch (e) {
-    console.error("Erro ao deletar imagem:", e);
-    res.status(500).json({ erro: "Erro interno do servidor" });
-  }
-});
 
-// ========================================
-// FIM DAS ROTAS DE IMAGENS
-// ========================================
-
-app.listen(port, () => {
-  console.log(`Serviço rodando na porta:  ${port});
-});
 
 app.post("/contato", async (req, res) => {
   console.log("Rota POST /contato solicitado"); // Log no terminal para indicar que a rota foi acessada
